@@ -2,7 +2,7 @@
   {
     "id": "s1",
     "title": "はじめまして",
-    "text": "はじめまして、「{player}」。私のことは｛target}って呼んで",
+    "text": "はじめまして、「{player}」。私のことは{target}って呼んで",
     "choices": [
       { "label": "もちろん！よろしくね", "delta": 2 },
       { "label": "え、急だね……まあいいよ", "delta": 1 },
