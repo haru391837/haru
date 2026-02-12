@@ -1,1 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>名前から性格が決まる会話アプリ</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
+<body>
+  <header class="app-header">
+    <h1 class="title">名前から性格が決まる会話アプリ</h1>
+    <p class="subtitle">好感度に応じて結末が変わる会話アプリ</p>
+  </header>
+
+  <main class="container">
+    <!-- LOADING -->
+    <section id="screen-loading" class="card">
+      <h2>読み込み中…</h2>
+      <p class="hint">JSONデータ（scenes.json）を読み込んでいます。</p>
+      <p class="hint" id="loadingError"></p>
+    </section>
+
+    <!-- START -->
+    <section id="screen-start" class="card hidden">
+      <h2>名前を入力</h2>
+      <div class="row">
+        <label class="label" for="nameInput">名前</label>
+        <input id="nameInput" class="input" type="text" placeholder="例：はるな" maxlength="20" />
+      </div>
+
+      <div class="row">
+        <button id="startBtn" class="btn primary">はじめる</button>
+        <button id="randomBtn" class="btn">ランダム名</button>
+      </div>
+
+      <div class="row">
+        <button id="continueBtn" class="btn ghost hidden">つづきから（セーブあり）</button>
+        <button id="clearSaveBtn" class="btn ghost hidden">セーブ削除</button>
+      </div>
+
+      <p class="hint">※ 同じ名前なら同じ性格になります</p>
+    </section>
+
+    <!-- GAME -->
+    <section id="screen-game" class="card hidden">
+      <div class="topbar">
+        <div class="badge" id="personaBadge">性格：---</div>
+        <div class="affection">
+          <span>好感度</span>
+          <div class="meter">
+            <div class="meter-bar" id="meterBar"></div>
+          </div>
+          <span class="affection-num" id="affectionNum">0</span>
+        </div>
+      </div>
+
+      <div class="charbox">
+        <div class="avatar" aria-hidden="true">★</div>
+        <div class="charinfo">
+          <div class="charname">
+            <span id="playerName">---</span>
+            <span class="small">のトモ</span>
+          </div>
+          <div class="chardesc" id="personaDesc">---</div>
+        </div>
+      </div>
+
+      <div class="dialog">
+        <div class="scene-title" id="sceneTitle">---</div>
+        <p class="scene-text" id="sceneText">---</p>
+      </div>
+
+      <div class="choices" id="choices"></div>
+
+      <div class="row split">
+        <button id="restartBtn" class="btn ghost">最初から</button>
+        <button id="nextBtn" class="btn">次へ</button>
+      </div>
+
+      <p class="hint" id="logHint"></p>
+      <p class="hint">※進行状況は自動保存されます</p>
+    </section>
+
+    <!-- END -->
+    <section id="screen-end" class="card hidden">
+      <h2 id="endTitle">---</h2>
+      <p id="endText">---</p>
+
+      <div class="endbox">
+        <div class="endbadge" id="endBadge">END</div>
+        <div class="endstats">
+          <div>名前：<strong id="endName">---</strong></div>
+          <div>性格：<strong id="endPersona">---</strong></div>
+          <div>最終好感度：<strong id="endAffection">0</strong></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <button id="againBtn" class="btn primary">もう一度</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>© 分岐型対話システム</small>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
