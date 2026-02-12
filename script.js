@@ -41,11 +41,11 @@ let SCENES = [];
 
 // ===== 状態 =====
 const state = {
-  name: "",
-  persona: PERSONAS[0],
+  playerName: "",   // 自分
+  targetName: "",   // 相手
+  persona: PERSONAS[0], // 相手の性格
   affection: 0,
   sceneIndex: 0,
-  // 履歴：二重加算防止にも使う
   history: [] // { sceneId, choiceIndex, delta }
 };
 
@@ -56,7 +56,8 @@ const screenStart   = $("screen-start");
 const screenGame    = $("screen-game");
 const screenEnd     = $("screen-end");
 
-const nameInput     = $("nameInput");
+const playerInput   = $("nameInput");
+const targetInput   = $("targetInput");
 const startBtn      = $("startBtn");
 const randomBtn     = $("randomBtn");
 const continueBtn   = $("continueBtn");
@@ -97,12 +98,13 @@ function showScreen(which){
 
 // ===== セーブ/ロード =====
 function saveGame(){
-  const payload = {
-    name: state.name,
-    affection: state.affection,
-    sceneIndex: state.sceneIndex,
-    history: state.history
-  };
+ const payload = {
+  playerName: state.playerName,
+  targetName: state.targetName,
+  affection: state.affection,
+  sceneIndex: state.sceneIndex,
+  history: state.history
+};
   localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 }
 
@@ -122,7 +124,7 @@ function clearSave(){
 
 // ===== 表示更新 =====
 function updateTop(){
-  playerName.textContent = state.name;
+  playerName.textContent = `相手：${state.targetName}`;
   personaBadge.textContent = `性格：${state.persona.title}`;
   personaDesc.textContent = state.persona.desc;
 
@@ -163,7 +165,10 @@ function renderScene(){
   }
 
   sceneTitle.textContent = scene.title;
-  sceneText.textContent  = applyTemplate(scene.text, { name: state.name });
+  sceneText.textContent = applyTemplate(scene.text, {
+  player: state.playerName,
+  target: state.targetName
+});
 
   // 選択肢の描画
   choicesBox.innerHTML = "";
@@ -227,7 +232,7 @@ function goEnding(){
 
   const happy = state.affection >= ENDING_THRESHOLD;
 
-  endName.textContent = state.name;
+  endName.textContent = `${state.playerName} → ${state.targetName}`;
   endPersona.textContent = state.persona.title;
   endAffection.textContent = String(state.affection);
 
@@ -246,26 +251,31 @@ function goEnding(){
 
 // ===== 開始/リセット =====
 function resetState(){
-  state.name = "";
+  state.playerName = "";
+  state.targetName = "";
   state.persona = PERSONAS[0];
   state.affection = 0;
   state.sceneIndex = 0;
   state.history = [];
 }
 
-function startGame(name){
-  const n = (name || "").trim();
-  if (!n){
-    alert("名前を入力してね！");
+function startGame(player, target){
+  const p = (player || "").trim();
+  const t = (target || "").trim();
+
+  if (!p || !t){
+    alert("自分の名前と相手の名前、両方入れてね！");
     return;
   }
 
   resetState();
-  state.name = n;
-  state.persona = decidePersona(n);
+  state.playerName = p;
+  state.targetName = t;
+
+  // 性格は「相手の名前」で決める
+  state.persona = decidePersona(t);
 
   saveGame();
-
   showScreen(screenGame);
   renderScene();
 }
@@ -275,8 +285,9 @@ function continueGame(){
   if (!data) return;
 
   resetState();
-  state.name = data.name || "";
-  state.persona = decidePersona(state.name);
+  state.playerName = data.playerName || "";
+  state.targetName = data.targetName || "";
+  state.persona = decidePersona(state.targetName);
   state.affection = Number(data.affection ?? 0);
   state.sceneIndex = Number(data.sceneIndex ?? 0);
   state.history = Array.isArray(data.history) ? data.history : [];
@@ -316,11 +327,11 @@ async function loadScenes(){
 }
 
 // ===== イベント =====
-startBtn.addEventListener("click", () => startGame(nameInput.value));
+startBtn.addEventListener("click", () => startGame(playerInput.value,targetInput.value));
 
 randomBtn.addEventListener("click", () => {
   const samples = ["ゆうた", "さくら", "れん", "みお", "ゆう", "なおと", "あおい", "ひなた"];
-  nameInput.value = samples[Math.floor(Math.random() * samples.length)];
+  targetInput.value = samples[Math.floor(Math.random() * samples.length)];
 });
 
 continueBtn.addEventListener("click", () => continueGame());
@@ -347,8 +358,11 @@ againBtn.addEventListener("click", () => {
   updateSaveButtons();
 });
 
-nameInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") startGame(nameInput.value);
+playerInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") startGame(playerInput.value, targetInput.value);
+});
+targetInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") startGame(playerInput.value, targetInput.value);
 });
 
 // ===== 起動 =====
