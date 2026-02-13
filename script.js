@@ -172,7 +172,7 @@ function renderScene(){
 
   // 選択肢の描画
   choicesBox.innerHTML = "";
-  logHint.textContent = "選択肢をクリックすると好感度が反映されます。";
+  logHint.textContent = "選択肢をクリックすると好感度が反映されます";
 
   scene.choices.forEach((c, idx) => {
     const btn = document.createElement("button");
@@ -240,12 +240,12 @@ function goEnding(){
     endBadge.textContent = "HAPPY";
     endTitle.textContent = "ハッピーエンド：心が通じた";
     endText.textContent =
-      "言葉の選び方が噛み合い、相手はあなたを信じることを選んだ。ふたりの物語はここから進む。";
+      "言葉の選び方が噛み合い、相手はあなたを信じることを選んだ。ふたりの物語はここから進む";
   } else {
     endBadge.textContent = "BAD";
     endTitle.textContent = "バッドエンド：すれ違い";
     endText.textContent =
-      "気持ちはあったのに、伝え方が噛み合わなかった。次は相手の性格に合う選択を探してみよう。";
+      "気持ちはあったのに、伝え方が噛み合わなかった。次は相手の性格に合う選択を探してみよう";
   }
 }
 
@@ -295,7 +295,7 @@ function continueGame(){
   showScreen(screenGame);
   renderScene();
   updateTop();
-  logHint.textContent = "セーブデータから再開しました。";
+  logHint.textContent = "セーブデータから再開しました";
 }
 
 function updateSaveButtons(){
